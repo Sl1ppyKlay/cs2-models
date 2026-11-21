@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INTERIAL — уникальные ассеты</title>
+<script>self.ModelViewerElement={meshoptDecoderLocation:"meshopt_decoder.js"}</script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<style>
+:root{--bg:#0e1015;--panel:#151821;--card:#1a1e29;--card2:#202535;--line:#262b3a;--tx:#e6e8ee;--mut:#8b93a7;--acc:#4fa3ff;--warn:#f0b44c;--err:#ef5f5f;--ok:#5fcf8a}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:rgba(14,16,21,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.wrap{max-width:1500px;margin:0 auto;padding:0 16px}
+.top{display:flex;align-items:center;gap:16px;padding:12px 0 8px;flex-wrap:wrap}
+h1{font-size:17px;margin:0;font-weight:650;letter-spacing:.2px}
+h1 small{color:var(--mut);font-weight:400;margin-left:8px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;padding-bottom:10px}
+.tab{background:none;border:0;color:var(--mut);padding:7px 12px;border-radius:8px;cursor:pointer;font:inherit}
+.tab:hover{color:var(--tx);background:var(--panel)}
+.tab.on{color:var(--tx);background:var(--card2)}
+.tab .c{opacity:.6;margin-left:6px;font-size:12px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-bottom:12px}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--mut);padding:5px 10px;border-radius:99px;cursor:pointer;font:inherit;font-size:13px}
+.chip.on{color:var(--tx);border-color:var(--acc)}
+input[type=search]{background:var(--panel);border:1px solid var(--line);color:var(--tx);padding:7px 11px;border-radius:8px;font:inherit;min-width:240px;flex:1;max-width:380px}
+select{background:var(--panel);border:1px solid var(--line);color:var(--tx);padding:6px 8px;border-radius:8px;font:inherit}
+.count{color:var(--mut);margin-left:auto;font-size:13px}
+main{padding:16px 0 60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.card{background:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;transition:background .15s;position:relative}
+.card:hover{background:var(--card2)}
+.pic{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,#232838,#141720 70%)}
+.t-оружие .pic{aspect-ratio:3/2}
+.pic img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.pic .none{color:var(--mut);font-size:12px;padding:12px;text-align:center}
+.meta{padding:8px 10px 10px}
+.nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{color:var(--mut);font-size:12px;display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.flags{position:absolute;top:7px;left:7px;right:7px;display:flex;gap:4px;flex-wrap:wrap}
+.f{font-size:11px;padding:2px 6px;border-radius:5px;background:rgba(10,12,16,.78);color:var(--mut)}
+.f.w{color:var(--warn)}.f.e{color:var(--err)}.f.a{color:var(--acc)}
+.empty{color:var(--mut);padding:40px;text-align:center}
+/* модалка */
+.ov{position:fixed;inset:0;background:rgba(5,6,9,.78);z-index:20;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px}
+.ov.on{display:flex}
+.dlg{background:var(--panel);border-radius:14px;width:min(1180px,100%);display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);overflow:hidden}
+@media (max-width:860px){.dlg{grid-template-columns:1fr}}
+.view{background:radial-gradient(circle at 50% 45%,#232838,#10131a 75%);min-height:460px;position:relative;display:flex;align-items:center;justify-content:center}
+.view img{max-width:100%;max-height:640px;object-fit:contain}
+.view model-viewer{width:100%;height:600px;--poster-color:transparent}
+.vt{position:absolute;top:10px;left:10px;display:flex;gap:4px;z-index:2}
+.vt button{background:rgba(10,12,16,.8);border:1px solid var(--line);color:var(--mut);padding:5px 10px;border-radius:7px;cursor:pointer;font:inherit;font-size:13px}
+.vt button.on{color:var(--tx);border-color:var(--acc)}
+.cap{position:absolute;bottom:10px;left:12px;right:12px;color:var(--mut);font-size:12px}
+.info{padding:18px 20px;overflow:auto;max-height:calc(100vh - 48px)}
+.info h2{margin:0 26px 4px 0;font-size:18px;word-break:break-all}
+.x{position:absolute;right:14px;top:10px;background:none;border:0;color:var(--mut);font-size:26px;cursor:pointer}
+.rows{display:grid;grid-template-columns:120px 1fr;gap:4px 10px;margin:12px 0;font-size:13px}
+.rows div:nth-child(odd){color:var(--mut)}
+.path{font-family:ui-monospace,Consolas,monospace;font-size:12px;word-break:break-all;user-select:all}
+.note{background:rgba(240,180,76,.08);color:var(--warn);padding:7px 10px;border-radius:8px;margin:6px 0;font-size:13px}
+.note.e{background:rgba(239,95,95,.08);color:var(--err)}
+h3{font-size:13px;color:var(--mut);font-weight:600;margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px}
+.ml{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.mi{background:var(--card);border-radius:8px;padding:6px;font-size:12px;cursor:pointer}
+.mi img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block}
+.mi .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi .er{color:var(--err);font-size:11px}
+.lst{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--mut);max-height:220px;overflow:auto;background:var(--bg);border-radius:8px;padding:8px 10px;margin:0;white-space:pre-wrap;word-break:break-all}
+table.br{width:100%;border-collapse:collapse;font-size:13px}
+table.br td,table.br th{padding:8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+table.br th{color:var(--mut);font-weight:500}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="top"><h1>INTERIAL · уникальные ассеты<small id="built"></small></h1></div>
+  <nav class="tabs" id="tabs"></nav>
+  <div class="bar" id="bar">
+    <span id="srcs"></span>
+    <input type="search" id="q" placeholder="Поиск по имени или пути…">
+    <select id="flt"><option value="">Все</option><option value="anim">С анимацией</option><option value="warn">С пометками</option><option value="noimg">Без превью</option></select>
+    <label style="color:var(--mut);font-size:13px;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ready" checked> только готовые</label>
+    <span class="count" id="count"></span>
+  </div>
+</div></header>
+<main class="wrap"><div id="prog" style="display:none;background:rgba(79,163,255,.08);color:var(--acc);padding:9px 12px;border-radius:8px;margin-bottom:12px;font-size:13px"></div><div id="out"></div></main>
+<div class="ov" id="ov"><div class="dlg" id="dlg" style="position:relative"></div></div>
+<script>
+const TYPES=[["оружие","Оружие"],["персонажи","Персонажи"],["питомцы","Питомцы"],["аксессуары","Аксессуары"],["прочее","Прочее"],["эффекты","Эффекты"],["broken","С ошибками"]];
+const SRC=["bluesen","crazypub","onetake","onetake_fun"];
+let D=[],tab="оружие",src=new Set(),q="",flt="",onlyReady=true;
+let V="";const u=p=>p?p.split("/").map(encodeURIComponent).join("/")+"?v="+V:"";
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const st=JSON.parse((()=>{try{return localStorage.getItem("ia_state")}catch(e){return null}})()||"{}");
+if(st.tab)tab=st.tab;
+function save(){try{localStorage.setItem("ia_state",JSON.stringify({tab}))}catch(e){}}
+
+fetch("data.json?"+Date.now(),{cache:"no-store"}).then(r=>r.json()).then(j=>{D=j.units;V=encodeURIComponent(j.built);document.getElementById("built").textContent="· собрано "+j.built+" · "+D.length+" единиц";init()});
+
+function inTab(e){return tab==="broken"?e.broken:(!e.broken&&e.type===tab)}
+function init(){
+  document.getElementById("tabs").innerHTML=TYPES.map(([k,n])=>`<button class="tab" data-k="${k}">${n}<span class="c">${D.filter(e=>k==="broken"?e.broken:(!e.broken&&e.type===k)).length}</span></button>`).join("");
+  document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.k;save();render()});
+  document.getElementById("srcs").innerHTML=SRC.map(s=>`<button class="chip" data-s="${s}">${s}</button>`).join(" ");
+  document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{src.has(b.dataset.s)?src.delete(b.dataset.s):src.add(b.dataset.s);b.classList.toggle("on");render()});
+  document.getElementById("q").oninput=e=>{q=e.target.value.trim().toLowerCase();render()};
+  document.getElementById("flt").onchange=e=>{flt=e.target.value;render()};
+  document.getElementById("ready").onchange=e=>{onlyReady=e.target.checked;render()};
+  const all=D.filter(e=>!e.broken),done=all.filter(e=>e.img&&!e.pending).length,pg=document.getElementById("prog");
+  if(done<all.length){pg.style.display="";pg.textContent=`Готово ${done} из ${all.length}, остальное в работе (обновите страницу позже). Пустые карточки скрыты галочкой «только готовые».`}
+  document.getElementById("ov").onclick=e=>{if(e.target.id==="ov")closeDlg()};
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDlg()});
+  render();
+}
+function flags(e){
+  const f=[];
+  if(e.n>1)f.push(`<span class="f">${e.n} ${e.type==="эффекты"?"шт.":"мод."}</span>`);
+  if(e.glb)f.push(`<span class="f a">3D</span>`);
+  if(e.anim&&/анимац/.test(e.anim))f.push(`<span class="f a">анимация</span>`);
+  if(e.is_fx_img&&!(e.fx&&e.fx.info_card))f.push(`<span class="f" title="${esc(e.anim||"Текстуры спрайтов эффекта, не съёмка частиц")}">${e.fx_anim_img?"спрайты":"текстуры"} · не съёмка частиц</span>`);
+  if(e.partial&&!(e.badges||[]).length)f.push(`<span class="f w" title="${esc(e.missing.join(", "))}">нет части текстур/анимаций</span>`);
+  (e.badges||[]).forEach(([t,tip])=>f.push(`<span class="f w" title="${esc(tip)}">${esc(t)}</span>`));
+  if(e.noimg)f.push(`<span class="f e">нет превью</span>`);
+  return f.join("");
+}
+function list(){
+  return D.filter(e=>inTab(e)&&(!onlyReady||tab==="broken"||(e.img&&!e.pending))&&(!src.size||src.has(e.src))&&(!q||(e.folder+" "+e.items.map(i=>i.name).join(" ")).toLowerCase().includes(q))
+    &&(!flt||(flt==="anim"&&e.anim_img)||(flt==="3d"&&e.glb)||(flt==="warn"&&(e.notes.length||e.partial))||(flt==="noimg"&&e.noimg)));
+}
+function render(){
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.k===tab));
+  const L=list(),out=document.getElementById("out");
+  document.getElementById("count").textContent=L.length+" шт.";
+  if(tab==="broken"){
+    out.innerHTML=L.length?`<p style="color:var(--mut)">В аддонах нет материала или меша — превью не делалось.</p><table class="br"><tr><th>Тип</th><th>Источник</th><th>Папка</th><th>Чего не хватает</th></tr>`+
+      L.map(e=>`<tr><td>${esc(e.type)}</td><td>${esc(e.src)}</td><td class="path">${esc(e.folder)}</td><td class="path">${e.missing.map(esc).join("<br>")}</td></tr>`).join("")+"</table>":`<div class="empty">Пусто</div>`;
+    return;
+  }
+  if(!L.length){out.innerHTML=`<div class="empty">Ничего не найдено</div>`;return}
+  out.innerHTML=`<div class="grid t-${tab}">`+L.map(e=>`<div class="card" data-id="${e.id}">
+    <div class="pic">${e.empty_reason?`<div class="none">${esc(e.empty_reason)}</div>`:e.img?`<img loading="lazy" src="${u(e.img)}" alt="">`:`<div class="none">${esc((e.items.find(i=>i.err)||{}).err||"нет превью")}</div>`}</div>
+    <div class="flags">${flags(e)}</div>
+    <div class="meta"><div class="nm" title="${esc(e.folder)}">${esc(e.name)}</div><div class="sub"><span>${esc(e.src)}</span><span>${e.mb} МБ</span><span>${e.files} файл.</span></div></div></div>`).join("")+"</div>";
+  out.querySelectorAll(".card").forEach(c=>{
+    const e=D[c.dataset.id],img=c.querySelector("img");
+    if(img&&e.anim_img){let over=false;c.onmouseenter=()=>{over=true;const a=new Image();a.onload=()=>{if(over)img.src=a.src};a.src=u(e.anim_img)};c.onmouseleave=()=>{over=false;img.src=u(e.img)}}
+    c.onclick=()=>open(e);
+  });
+}
+let cur=null;
+function view(mode,src2){
+  const e=cur,v=document.getElementById("view");if(!v)return;
+  document.querySelectorAll(".vt button").forEach(b=>b.classList.toggle("on",b.dataset.m===mode));
+  let cap="";
+  if(mode==="3d"){v.querySelector(".body").innerHTML=`<model-viewer src="${u(e.glb)}" camera-controls auto-rotate camera-orbit="-35deg 72deg auto" field-of-view="auto" min-camera-orbit="auto auto auto" bounds="tight" auto-rotate-delay="0" rotation-per-second="25deg" shadow-intensity="0.6" exposure="1.05" environment-image="neutral" ${e.anim&&/анимац/.test(e.anim)?"autoplay":""} interaction-prompt="none"><div slot="poster" style="color:var(--mut);display:flex;align-items:center;justify-content:center;height:100%">Загрузка 3D…</div></model-viewer>`;cap="3D: крутить мышью, колесо — масштаб ("+e.glb_mb+" МБ, текстуры уменьшены)"}
+  else if(mode==="anim"){v.querySelector(".body").innerHTML=`<img src="${u(e.anim_img)}">`;cap=e.anim||""}
+  else if(mode==="fx"){v.querySelector(".body").innerHTML=`<img src="${u(e.fx_anim_img||e.fx_img)}">`;cap="Текстуры спрайтов эффекта"+(e.fx_anim_img?" (кадры листов спрайтов)":"")+" — это не съёмка частиц в игре"}
+  else{v.querySelector(".body").innerHTML=`<img src="${u(src2||e.img)}">`;cap=src2?"":"Рендер (Blender)"}
+  v.querySelector(".cap").textContent=cap;
+}
+function open(e){
+  cur=e;const ov=document.getElementById("ov"),d=document.getElementById("dlg");
+  const btn=[];
+  if(e.img&&!e.is_fx_img)btn.push(`<button data-m="img">Рендер</button>`);
+  if(e.anim_img&&!e.is_fx_img)btn.push(`<button data-m="anim">${/анимац/.test(e.anim||"")?"Анимация":"Поворот"}</button>`);
+  if(e.glb)btn.push(`<button data-m="3d">3D</button>`);
+  if(e.fx_img)btn.push(`<button data-m="fx">Текстуры эффекта</button>`);
+  const notes=[...(e.partial?["нет части текстур/анимаций (недостающие .vtex/.vnmgraph) — показано как есть"]:[]),...e.notes];
+  const it=e.items.map((m,k)=>`<div class="mi" data-k="${k}" title="${esc(m.path)}">${m.img?`<img loading="lazy" src="${u(m.img)}">`:`<div style="aspect-ratio:1/1"></div>`}<div class="n">${esc(m.name)}</div>${m.err?`<div class="er">не экспортировалось: ${esc(m.err)}</div>`:""}${m.tris?`<div style="color:var(--mut)">${m.tris.toLocaleString("ru")} полиг.</div>`:""}${m.dropped?`<div style="color:var(--mut);font-size:11px" title="${esc(m.dropped.join(", "))}">в превью убраны далёкие мелкие куски (${m.dropped.length})</div>`:""}${m.no_tex&&m.no_tex.length?`<div class="er" style="color:var(--warn)">без текстур: ${esc(m.no_tex.slice(0,3).join(", "))}</div>`:""}</div>`).join("");
+  const fx=e.fx?`<h3>Эффект</h3><div class="rows"><div>Систем vpcf</div><div>${e.fx.vpcf}</div><div>Рендереров</div><div>${e.fx.renderers}</div><div>Текстур</div><div>${e.fx.textures.length}${e.fx.textures_missing.length?` · не найдено ${e.fx.textures_missing.length}`:""}</div></div>`+
+    (e.fx.textures_missing.length?`<pre class="lst">${e.fx.textures_missing.map(esc).join("\n")}</pre>`:"")+
+    (e.vpcf_list?`<h3>Системы частиц (${e.vpcf_list.length})</h3><pre class="lst">${e.vpcf_list.map(esc).join("\n")}</pre>`:""):"";
+  d.innerHTML=`<div class="view" id="view"><div class="vt">${btn.join("")}</div><div class="body" style="width:100%;display:flex;justify-content:center"></div><div class="cap"></div></div>
+  <div class="info"><button class="x" onclick="closeDlg()">×</button><h2>${esc(e.name)}</h2><div style="color:var(--mut)">${esc(e.type)} · ${esc(e.src)}</div>
+  ${notes.map(n=>`<div class="note">${esc(n)}</div>`).join("")}
+  <div class="rows"><div>Папка</div><div class="path">${esc(e.folder)}</div><div>Моделей</div><div>${e.n}</div><div>Файлов</div><div>${e.files}</div><div>Размер</div><div>${e.mb} МБ</div>${e.anim?`<div>Превью</div><div>${esc(e.anim)}</div>`:""}</div>
+  ${e.items.length?`<h3>Модели (${e.items.length})</h3><div class="ml">${it}</div>`:""}
+  ${fx}
+  ${e.missing.length?`<h3>Нет файлов (${e.missing.length})</h3><pre class="lst">${e.missing.map(esc).join("\n")}</pre>`:""}</div>`;
+  d.querySelectorAll(".vt button").forEach(b=>b.onclick=()=>view(b.dataset.m));
+  d.querySelectorAll(".mi").forEach(m=>m.onclick=()=>{const x=e.items[m.dataset.k];if(x.img)view("img2",x.img)});
+  ov.classList.add("on");document.body.style.overflow="hidden";
+  if(!e.img&&!e.fx_img){document.querySelector("#view .body").innerHTML=`<div style="color:var(--mut);padding:40px">Превью нет</div>`}else view(e.is_fx_img?"fx":(e.anim_img&&!e.glb?"anim":(e.glb?"3d":"img")));
+}
+function closeDlg(){const ov=document.getElementById("ov");if(!ov.classList.contains("on"))return;ov.classList.remove("on");document.getElementById("dlg").innerHTML="";document.body.style.overflow=""}
+</script>
+</body>
+</html>
